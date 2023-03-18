@@ -4,6 +4,8 @@ import math
 from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 from time import time
+import matplotlib.pyplot as plt
+import scipy.stats as stats
 
 class MainRRT:
     def __init__(self, start_1, goal, cube_len):
@@ -19,18 +21,22 @@ class MainRRT:
         #print("Initialized?")
 
     def gen_end_point(self, x, y, z):
-        shape, scale = 0, 2
+        
+        
+        lower, upper = -2, 2
+        mu, sigma = 0, 2
+        
         rand_x = -1 
         rand_y = -1
         rand_z = -1
         while rand_x > self.side_len or rand_x < 0:
-            x_1 = x + np.round(np.random.normal(shape, scale, 10))
+            x_1 = x + np.round(stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma).rvs(10))
             rand_x = random.choice(x_1)
         while rand_y > self.side_len or rand_y < 0: 
-            y_1 = y + np.round(np.random.normal(shape, scale, 10))
+            y_1 = y + np.round(stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma).rvs(10))
             rand_y = random.choice(y_1)
         while rand_z > self.side_len or rand_z < 0:
-            z_1 = z + np.round(np.random.normal(shape, scale, 10))
+            z_1 = z + np.round(stats.truncnorm((lower - mu) / sigma, (upper - mu) / sigma, loc=mu, scale=sigma).rvs(10))
             rand_z = random.choice(z_1)
         
         return rand_x, rand_y, rand_z
