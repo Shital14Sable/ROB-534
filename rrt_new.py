@@ -1,20 +1,40 @@
 import random
+import numpy as np
 import math
 from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
-from point_cloud import get_point_cloud
 from time import time
 
 class MainRRT:
     def __init__(self, start_1, goal, cube_len):
         self.side_len = cube_len
         self.segments = []
-        self.end = goal
+        self.end = self.gen_end_point(goal[0], goal[1], goal[2])
+        print(self.end)
         self.start = start_1
         self.visited_nodes = [['q0', self.start, 'None']]
         self.gen_tree()
         self.path_nodes, self.path_segments = [], []  # nodes/segments along the path
         self.find_path()
+        #print("Initialized?")
+
+    def gen_end_point(self, x, y, z):
+        shape, scale = 0, 2
+        rand_x = -1 
+        rand_y = -1
+        rand_z = -1
+        while rand_x > self.side_len or rand_x < 0:
+            x_1 = x + np.round(np.random.normal(shape, scale, 10))
+            rand_x = random.choice(x_1)
+        while rand_y > self.side_len or rand_y < 0: 
+            y_1 = y + np.round(np.random.normal(shape, scale, 10))
+            rand_y = random.choice(y_1)
+        while rand_z > self.side_len or rand_z < 0:
+            z_1 = z + np.round(np.random.normal(shape, scale, 10))
+            rand_z = random.choice(z_1)
+        
+        return rand_x, rand_y, rand_z
+    
 
     def round_up(self, x):
         return round(x)
@@ -50,7 +70,7 @@ class MainRRT:
             # if newly created node
             for mm in range(len(self.visited_nodes)):
                 if self.visited_nodes[mm][1] == node:
-                    print('pass')
+                    #print('pass')
                     pass
                 else:
                     point_ok = True
@@ -87,17 +107,21 @@ class MainRRT:
 if __name__ == "__main__":
     # list of plotting colors
     # [start, end, points, path]
+    count = 0
     COLORS = ['#6AB71F', '#FF5733', '#4DAAEA', '#C0120A']
-    start = (0, 0, 0)
-    end = (15, 15, 0)
-    cube_len = 20
-    # call and generate RRT
-    start_time = time()
-    RRT = MainRRT(start, end, cube_len)
-    end_time = time()-start_time
-    print(end_time)
-
-    #print(*RRT.path_segments, sep="\n")
+    start = (0, 20, 0)
+    end = (40, 0, 40)
+    cube_len = 50
+    
+    for _ in range(5):
+        # call and generate RRT
+        print(count)
+        print("Starting RRT")
+        start_time = time()
+        RRT = MainRRT(start, end, cube_len)
+        end_time = time()-start_time
+        print(RRT.path_nodes)
+        count+=1
 
     fig = plt.figure()
     ax = plt.axes(projection='3d')
